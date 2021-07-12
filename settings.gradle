@@ -1,0 +1,4 @@
+rootProject.name = "Rocket Core - Data Network"
+include ':core-data-network-commons'
+include ':core-data-network-test'
+include ':core-data-network'
