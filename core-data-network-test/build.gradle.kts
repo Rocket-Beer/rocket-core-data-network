@@ -40,7 +40,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20")
     implementation("androidx.core:core-ktx:1.6.0")
 
-    // api("com.rocket.core:data-network-commons:0.0.1")
+    implementation("com.rocket.core:core-domain:0.0.1")
+    api("com.rocket.core:crash-reporting:0.0.2")
+    api("com.rocket.core:core-data-network-commons:0.0.2")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")

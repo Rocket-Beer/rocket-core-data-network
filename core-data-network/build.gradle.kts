@@ -49,7 +49,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.annotation:annotation:1.2.0")
 
-    // api("com.rocket.core:data-network-commons:0.0.1")
+    api("com.rocket.core:core-data-network-commons:0.0.1")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
