@@ -49,7 +49,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.annotation:annotation:1.2.0")
 
-    //api("com.rocket.core:data-network-commons:0.0.1")
+    // api("com.rocket.core:data-network-commons:0.0.1")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
@@ -57,7 +57,7 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.10.0")
 
-    //testImplementation("com.rocket.android.core:data-network-test:0.0.1")
+    // testImplementation("com.rocket.android.core:data-network-test:0.0.1")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.3")
     testImplementation("com.google.truth:truth:1.1.3")

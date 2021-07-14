@@ -2,8 +2,8 @@ package com.rocket.core.data.network.commons.interceptor
 
 import com.rocket.core.crashreporting.logger.CrashLogger
 import com.rocket.core.data.network.commons.error.NoConnectionException
+import com.rocket.core.data.network.commons.logger.mapFromRequest
 import com.rocket.core.data.network.commons.status.NetworkHandler
-import mapFromRequest
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -35,8 +35,7 @@ class ConnectionInterceptor(
                         map = mapFromRequest(request)
                     )
                     throw unknownHostException
-                } catch (e: Exception) {
-                    val exception = IOException("Network error ${e.message}")
+                } catch (exception: IOException) {
                     crashLogger.log(
                         exception = exception,
                         map = mapFromRequest(request)

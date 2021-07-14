@@ -4,7 +4,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 @Suppress("unused")
-abstract class BaseHeaderInterceptor() : Interceptor {
+abstract class BaseHeaderInterceptor : Interceptor {
     abstract var headersMap: Map<String, String>
 
     override fun intercept(chain: Interceptor.Chain): Response {

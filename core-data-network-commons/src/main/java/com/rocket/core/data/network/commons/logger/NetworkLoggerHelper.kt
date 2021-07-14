@@ -1,3 +1,5 @@
+package com.rocket.core.data.network.commons.logger
+
 import okhttp3.Request
 import okhttp3.RequestBody
 import okio.Buffer
@@ -5,13 +7,13 @@ import retrofit2.Response
 import java.io.IOException
 
 private fun bodyToString(request: RequestBody?): String {
-    try {
+    return try {
         val buffer = Buffer()
         request ?: return ""
         request.writeTo(buffer)
-        return buffer.readUtf8()
-    } catch (e: IOException) {
-        return ""
+        buffer.readUtf8()
+    } catch (_: IOException) {
+        ""
     }
 }
 
