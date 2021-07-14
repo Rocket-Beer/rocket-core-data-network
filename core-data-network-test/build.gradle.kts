@@ -40,15 +40,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20")
     implementation("androidx.core:core-ktx:1.6.0")
 
-    implementation("com.rocket.core:core-domain:0.0.1")
-    api("com.rocket.core:crash-reporting:0.0.2")
-    api("com.rocket.core:core-data-network-commons:0.0.2")
+    implementation("com.rocket.core:core-domain:0.0.3-alpha2")
+    implementation("com.rocket.core:crash-reporting:0.0.3-alpha3")
+    api("com.rocket.core:core-data-network-commons:0.0.3-alpha")
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
-    implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.10.0")
 
     api("junit:junit:4.13.2")
     api("org.junit.jupiter:junit-jupiter:5.6.3")
