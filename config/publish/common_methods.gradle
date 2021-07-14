@@ -73,10 +73,6 @@ ext {
     }
 
     getPublisherPassword = { project ->
-        println("**MAAAP")
-        System.getenv().each { key, value ->
-            println "Name: $key Age: $value"
-        }
         return getLocalProperty(project, LOCAL_PUBLISHER_TOKEN) ?: System.getenv(GITHUB_ACTIONS_PUBLISHER_TOKEN)
     }
 }
