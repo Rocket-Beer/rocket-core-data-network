@@ -12,11 +12,11 @@ java {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20")
 
-    api("com.rocket.core:crash-reporting:0.0.2")
+    api("com.rocket.core:crash-reporting:0.0.3-alpha3")
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
-    implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
+    api("com.squareup.retrofit2:retrofit:2.9.0")
+    api("com.squareup.retrofit2:converter-moshi:2.9.0")
+    api("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    api("com.squareup.moshi:moshi-kotlin:1.12.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.10.0")
 }
