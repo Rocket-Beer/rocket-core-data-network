@@ -50,10 +50,10 @@ dependencies {
     implementation("androidx.annotation:annotation:1.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-native-mt")
 
-    implementation("com.rocket.core:core-domain:0.0.3-alpha5")
-    implementation("com.rocket.core:crash-reporting:0.0.3-alpha5")
-    implementation("com.rocket.android.core:crash-reporting-android:0.0.3-alpha6")
-    implementation("com.rocket.core:core-data-network-commons:0.0.3-alpha3")
+    implementation("com.rocket.core:core-domain:0.0.3-alpha6")
+    implementation("com.rocket.core:crash-reporting:0.0.3-alpha6")
+    implementation("com.rocket.android.core:crash-reporting-android:0.0.3-alpha7")
+    implementation("com.rocket.core:core-data-network-commons:0.0.3-alpha4")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
