@@ -2,8 +2,6 @@ package com.rocket.android.core.data.network.test.utils
 
 import com.rocket.core.domain.functional.Either
 
-class TestException : Exception()
-
 fun <L> Either<L, *>.l(): L {
     return this.fold(
         ifLeft = { it },

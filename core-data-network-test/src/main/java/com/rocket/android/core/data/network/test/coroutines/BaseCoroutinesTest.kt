@@ -17,7 +17,10 @@ import org.junit.Before
 open class BaseCoroutinesTest(private val crashLogger: CrashLogger = TestLogger()) {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
-        crashLogger.log("BaseCoroutinesTest - CoroutineExceptionHandler handled crash $exception \\n ${exception.cause?.message}\"")
+        crashLogger.log(
+            "BaseCoroutinesTest - CoroutineExceptionHandler handled crash " +
+                "$exception \\n ${exception.cause?.message}\""
+        )
     }
     protected val testCoroutineScope =
         TestCoroutineScope(testDispatcher + coroutineExceptionHandler)
