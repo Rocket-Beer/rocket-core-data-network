@@ -18,19 +18,22 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
 /**
- * Core dataNetwork provider for dependency injection, as a service locator, indicates default implementations for all network necessary objects.
+ * Core dataNetwork provider for dependency injection, as a service locator, indicates default
+ * implementations for all network necessary objects.
  *
  * Use it in your dependency injector library:
  * @code CoreDataNetworkProvider.getInstance(context)
  *
- * Create OkHttpClient, use data commons network extension {@link com.rocket.android.core.data.commons.network.di.createOkHttpClient} to do it:
+ * Create OkHttpClient, use data commons network extension
+ * {@link com.rocket.android.core.data.commons.network.di.createOkHttpClient} to do it:
  *  createOkHttpClient(
  *      connectionInterceptor = coreDataNetworkProvider.connectionInterceptor,
  *      loggingInterceptor = coreDataNetworkProvider.httpLoggingInterceptor,
  *      headerInterceptor = BaseHeaderInterceptor
  *  )
  *
- * Create ApiService, use data commons network extension {@link com.rocket.android.core.data.commons.network.di.createApiClient} to do it:
+ * Create ApiService, use data commons network extension
+ * {@link com.rocket.android.core.data.commons.network.di.createApiClient} to do it:
  *  createApiClient(
  *      okHttpClient = okHttpClient,
  *      baseUrl = url
@@ -90,8 +93,8 @@ open class CoreDataNetworkProvider private constructor(private val context: Cont
             loggingInterceptor = httpLoggingInterceptor,
             headerInterceptor = headerInterceptor,
             certificateSslPinner = certificatePinner,
-            connectTimeout = getPropertyOrNull(DataNetworkProperty.CONNECT_TIMEOUT) ?: 60L,
-            readTimeout = getPropertyOrNull(DataNetworkProperty.READ_TIMEOUT) ?: 60L
+            connectTimeout = getPropertyOrNull(DataNetworkProperty.CONNECT_TIMEOUT) ?: CONNECT_TIMEOUT,
+            readTimeout = getPropertyOrNull(DataNetworkProperty.READ_TIMEOUT) ?: READ_TIMEOUT
         )
     }
 
@@ -109,6 +112,9 @@ open class CoreDataNetworkProvider private constructor(private val context: Cont
     }
 
     companion object {
+        const val CONNECT_TIMEOUT = 60L
+        const val READ_TIMEOUT = 60L
+
         @Suppress("ObjectPropertyName")
         private lateinit var _instance: CoreDataNetworkProvider
 

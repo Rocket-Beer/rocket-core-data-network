@@ -11,9 +11,9 @@ internal class HeaderInterceptor : BaseHeaderInterceptor() {
         set(_) {}
 
     companion object HeaderConstants {
-        val CONTENT_TYPE = "Content-Type"
-        val APPLICATION_JSON = "application/json"
-        val X_LANG = "x-lang"
-        val ES = "ES"
+        const val CONTENT_TYPE = "Content-Type"
+        const val APPLICATION_JSON = "application/json"
+        const val X_LANG = "x-lang"
+        const val ES = "ES"
     }
 }

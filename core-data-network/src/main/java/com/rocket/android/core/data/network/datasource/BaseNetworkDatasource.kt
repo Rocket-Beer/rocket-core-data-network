@@ -23,7 +23,8 @@ import java.net.UnknownHostException
 /**
  * Base network datasource to simple manage network request, connection status, and reponse parsing.
  * Allow base responses (json object responses) or generic (json list responses).
- * @constructor crashLogger to register all request or parsing errors {@link CrashLogger}. By default uses DefaultLogger which writes on console log.
+ * @constructor crashLogger to register all request or parsing errors {@link CrashLogger}.
+ * By default uses DefaultLogger which writes on console log.
  *
  * @code Sample code:
  * class SimpleNetworkDatasource(
@@ -51,19 +52,26 @@ import java.net.UnknownHostException
  *          return requestGenericApi(apiService.getAllGeneric()) { it }
  *      }
  *
- *      fun saveElement(data: ApiRequest.SimpleFake): Either<Failure, ApiResponse.BaseSimpleFakeApiResponse?> {
+ *      fun saveElement(data: ApiRequest.SimpleFake)
+ *      : Either<Failure, ApiResponse.BaseSimpleFakeApiResponse?> {
  *          return requestApi(apiService.saveElement(data)) { it }
  *      }
  *
- *      override fun parseErrorType(code: Int, message: String, body: String?): BaseNetworkApiResponse {
+ *      override fun parseErrorType(code: Int, message: String, body: String?)
+ *      : BaseNetworkApiResponse {
  *          return body?.let {
  *              if (it.isEmpty())
  *                  ApiResponse.BaseSimpleFakeApiResponse(
  *                      code = code.toString(),
  *                      message = message
  *                  )
- *              else MoshiJsonParser().fromJson(it, ApiResponse.BaseSimpleFakeApiResponse::class.java)
- *              } ?: ApiResponse.BaseSimpleFakeApiResponse(code = code.toString(), message = message)
+ *              else {
+ *                  MoshiJsonParser()
+ *                      .fromJson(it, ApiResponse.BaseSimpleFakeApiResponse::class.java)
+ *              }
+ *              } ?: run {
+ *                  ApiResponse.BaseSimpleFakeApiResponse(code = code.toString(), message = message)
+ *              }
  *          }
  *      }
  *
@@ -103,16 +111,11 @@ import java.net.UnknownHostException
  *      @Json(name = "finished") val isFinished: Boolean?
  *  ) : BaseSimpleFakeApiResponse()
  */
+@Suppress("TooManyFunctions")
 open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
-    private val UNKNOWN_ERROR_CODE = "-1"
-    private val NO_CONNECTION = "-400"
-    private val HTTP_EXCEPTION_CODE = "-401"
-    private val TIMEOUT = "-402"
-    private val UNKNOWN_HOST = "-403"
-    private val JSON_FORMAT = "-404"
-
     //region Generic
-    /** Suspendable execution of an generic api call (non BaseNetworkApiResponse response expected {@link BaseNetworkApiResponse}) and parse success result.
+    /** Suspendable execution of an generic api call (non BaseNetworkApiResponse response expected
+     * {@link BaseNetworkApiResponse}) and parse success result.
      * @param call retrofit Response to execute.
      * @param parserSuccess lambda to parse success response.
      * @return success/unsuccess result wrapped into Either class.
@@ -128,7 +131,8 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
         }
     }
 
-    /** Executes an generic api call (non BaseNetworkApiResponse response expected {@link BaseNetworkApiResponse}) and parse success result.
+    /** Executes an generic api call (non BaseNetworkApiResponse response expected
+     * {@link BaseNetworkApiResponse}) and parse success result.
      * @param call retrofit Call to execute.
      * @param parserSuccess lambda to parse success response.
      * @return success/unsuccess result wrapped into Either class.
@@ -193,7 +197,8 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
     //endregion
 
     //region Base
-    /** Suspendable execution of an api call (BaseNetworkApiResponse response expected {@link BaseNetworkApiResponse}) and parse success result.
+    /** Suspendable execution of an api call (BaseNetworkApiResponse response expected
+     * {@link BaseNetworkApiResponse}) and parse success result.
      * @param call retrofit Response to execute.
      * @param parserSuccess lambda to parse success response.
      * @return success/unsuccess result wrapped into Either class.
@@ -209,7 +214,8 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
         }
     }
 
-    /** Executes an api call (BaseNetworkApiResponse response expected {@link BaseNetworkApiResponse}) and parse success result.
+    /** Executes an api call (BaseNetworkApiResponse response expected
+     * {@link BaseNetworkApiResponse}) and parse success result.
      * @param call retrofit Call to execute.
      * @param parserSuccess lambda to parse success response.
      * @return success/unsuccess result wrapped into Either class.
@@ -273,7 +279,8 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      * @param response retrofit Response to parse.
      * @return {@link BaseNetworkApiResponse} either with apiError.
      */
-    private fun <Error : BaseNetworkApiResponse?, Domain> parseError(response: Response<Error>): Either<BaseNetworkApiResponse, Domain> {
+    private fun <Error : BaseNetworkApiResponse?, Domain> parseError(response: Response<Error>):
+        Either<BaseNetworkApiResponse, Domain> {
         crashLogger.log(
             exception = NetworkException("parseError"),
             map = mapFromResponse(response)
@@ -296,7 +303,8 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      * @param response retrofit Response to parse.
      * @return {@link BaseNetworkApiResponse} either with apiError.
      */
-    private fun <Domain> parseErrorBody(response: Response<*>): Either<BaseNetworkApiResponse, Domain> {
+    private fun <Domain> parseErrorBody(response: Response<*>):
+        Either<BaseNetworkApiResponse, Domain> {
         val errorBody = response.errorBody()?.string()
 
         crashLogger.log(
@@ -307,24 +315,21 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
                 }
         )
 
-        return try {
-            Left(
-                parseErrorType(
-                    code = response.code(),
-                    message = response.message(),
-                    body = errorBody
-                )
+        return Left(
+            parseErrorType(
+                code = response.code(),
+                message = response.message(),
+                body = errorBody
             )
-        } catch (e: Exception) {
-            Left(throwError(response.code().toString(), e.message))
-        }
+        )
     }
 
     /** Parse throwable error to apiError wrapped in Either object.
      * @param throwable error.
      * @return {@link BaseNetworkApiResponse} either with apiError.
      */
-    private fun <Domain> manageRequestException(error: Throwable): Either<BaseNetworkApiResponse, Domain> {
+    private fun <Domain> manageRequestException(error: Throwable):
+        Either<BaseNetworkApiResponse, Domain> {
         crashLogger.log(
             exception = NetworkException("manageRequestException"),
             map = mapOf(LOG_RESPONSE_MESSAGE to error.message)
@@ -376,16 +381,23 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
             override fun errorData(): Any? = message
         }
 
-    /** Creates new apiResponse (BaseNetworkApiResponse response expected {@link BaseNetworkApiResponse}) object with code and message error. This could be overridden by new classes to parse body String into particular ApiError class. Only needed for BaseNetworkApiResponse, not for generic requests.
+    /** Creates new apiResponse (BaseNetworkApiResponse response expected
+     * {@link BaseNetworkApiResponse}) object with code and message error.
+     * This could be overridden by new classes to parse body String into particular ApiError class.
+     * Only needed for BaseNetworkApiResponse, not for generic requests.
      * @code Sample code:
-     * override fun parseErrorType(code: Int, message: String, body: String?): BaseNetworkApiResponse {
+     * override fun parseErrorType(code: Int, message: String, body: String?)
+     * : BaseNetworkApiResponse {
      *      return body?.let {
      *          if (it.isEmpty())
      *              ApiResponse.BaseSimpleFakeApiResponse(
      *                  code = code.toString(),
      *                  message = message
      *              )
-     *          else MoshiJsonParser().fromJson(it, ApiResponse.BaseSimpleFakeApiResponse::class.java)
+     *          else {
+     *              MoshiJsonParser()
+     *                  .fromJson(it, ApiResponse.BaseSimpleFakeApiResponse::class.java)
+     *          }
      *      } ?: ApiResponse.BaseSimpleFakeApiResponse(code = code.toString(), message = message)
      * }
      * @param code error code.
@@ -397,8 +409,17 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
         object :
             BaseNetworkApiResponse() {
             override fun isSuccess(): Boolean = false
-            override fun errorCode(): String? = code.toString()
+            override fun errorCode(): String = code.toString()
             override fun errorData(): Any? = message
         }
     //endregion
+
+    companion object {
+        private const val UNKNOWN_ERROR_CODE = "-1"
+        private const val NO_CONNECTION = "-400"
+        private const val HTTP_EXCEPTION_CODE = "-401"
+        private const val TIMEOUT = "-402"
+        private const val UNKNOWN_HOST = "-403"
+        private const val JSON_FORMAT = "-404"
+    }
 }
