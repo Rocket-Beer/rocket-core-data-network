@@ -1,0 +1,7 @@
+{
+  "code": "ERR-001",
+  "message": {
+    "id": 1,
+    "description": "Error message"
+  }
+}
