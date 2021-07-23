@@ -1,8 +1,8 @@
 package com.rocket.android.core.data.network.interceptor
 
-import com.rocket.android.core.data.commons.network.interceptor.BaseHeaderInterceptor
+import com.rocket.core.data.network.commons.interceptor.BaseHeaderInterceptor
 
-internal class HeaderInterceptor() : BaseHeaderInterceptor() {
+internal class HeaderInterceptor : BaseHeaderInterceptor() {
     override var headersMap: Map<String, String>
         get() = mutableMapOf(
             CONTENT_TYPE to APPLICATION_JSON,

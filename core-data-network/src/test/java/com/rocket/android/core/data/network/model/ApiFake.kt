@@ -16,13 +16,13 @@ internal class ApiResponse {
         }
     }
 
-    open class ApiBaseSimple() : ApiBase<String>() {
+    open class ApiBaseSimple : ApiBase<String>() {
         override fun toString(): String {
             return "code=$code, message=$message"
         }
     }
 
-    open class ApiBaseComplex() : ApiBase<ApiError>() {
+    open class ApiBaseComplex : ApiBase<ApiError>() {
         override fun toString(): String {
             return "code=$code, data=$message"
         }

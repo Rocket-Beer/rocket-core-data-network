@@ -61,7 +61,7 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.10.0")
 
-    testImplementation("com.rocket.android.core:core-data-network-test:0.0.2-alpha")
+    testImplementation("com.rocket.android.core:core-data-network-test:0.0.2-alpha4")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.3")
     testImplementation("com.google.truth:truth:1.1.3")

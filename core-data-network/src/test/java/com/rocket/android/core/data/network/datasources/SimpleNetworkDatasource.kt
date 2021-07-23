@@ -1,14 +1,15 @@
 package com.rocket.android.core.data.network.datasources
 
-import arrow.core.Either
-import com.rocket.android.core.data.commons.logging.CrashLogger
 import com.rocket.android.core.data.network.datasource.BaseNetworkDatasource
 import com.rocket.android.core.data.network.model.ApiRequest
 import com.rocket.android.core.data.network.model.ApiResponse
+import com.rocket.android.core.data.network.model.ApiResponse.SimpleListFake
 import com.rocket.android.core.data.network.model.BaseNetworkApiResponse
 import com.rocket.android.core.data.network.parser.MoshiJsonParser
 import com.rocket.android.core.data.network.service.SimpleFakeApiService
-import com.rocket.android.core.domain.error.Failure
+import com.rocket.core.crashreporting.logger.CrashLogger
+import com.rocket.core.domain.error.Failure
+import com.rocket.core.domain.functional.Either
 import java.lang.Exception
 
 internal class SimpleNetworkDatasource(
@@ -16,7 +17,7 @@ internal class SimpleNetworkDatasource(
     crashLogger: CrashLogger
 ) : BaseNetworkDatasource(crashLogger) {
 
-    suspend fun getAllSuspend(): Either<Failure, ApiResponse.SimpleListFake?> {
+    suspend fun getAllSuspend(): Either<Failure, SimpleListFake?> {
         return requestApi(apiService.getAllSuspend()) { it }
     }
 
@@ -45,7 +46,7 @@ internal class SimpleNetworkDatasource(
             else {
                 try {
                     MoshiJsonParser().fromJson(it, ApiResponse.ApiBaseSimple::class.java)
-                } catch(exception: Exception) {
+                } catch (_: Exception) {
                     MoshiJsonParser().fromJson(it, ApiResponse.ApiBaseComplex::class.java)
                 }
             }

@@ -1,12 +1,12 @@
 package com.rocket.android.core.data.network
 
-import com.rocket.android.core.data.commons.network.di.createApiClient
-import com.rocket.android.core.data.commons.network.interceptor.BaseHeaderInterceptor
-import com.rocket.android.core.data.commons.network.interceptor.NoConnectionException
 import com.rocket.android.core.data.network.interceptor.HeaderInterceptor
 import com.rocket.android.core.data.network.model.fakeApiRequestSimpleFake
 import com.rocket.android.core.data.network.service.SimpleFakeApiService
-import com.rocket.android.core.data.network.test.MockWebServerTest
+import com.rocket.android.core.data.network.test.mockserver.MockWebServerTest
+import com.rocket.core.data.network.commons.di.createApiClient
+import com.rocket.core.data.network.commons.error.NoConnectionException
+import com.rocket.core.data.network.commons.interceptor.BaseHeaderInterceptor
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -26,37 +26,33 @@ internal class SimpleApiClientTest : MockWebServerTest() {
         initDI()
     }
 
+    override fun configureOkHttpClient(headerInterceptor: BaseHeaderInterceptor?) {
+        super.configureOkHttpClient(headerInterceptor)
+        configureApiClient()
+    }
+
+    override fun configureNetworkTimeout() {
+        super.configureNetworkTimeout()
+        configureApiClient()
+    }
+
+    override fun configureUnknownHost() {
+        super.configureUnknownHost()
+        configureApiClient()
+    }
+
+    override fun configureNetworkException() {
+        super.configureNetworkException()
+        configureApiClient()
+    }
+
     private fun initDI() {
         headerInterceptor = HeaderInterceptor()
         super.configureOkHttpClient(headerInterceptor)
-
-        sut = createApiClient(
-            okHttpClient = okHttpClient,
-            baseUrl = baseEndpoint
-        )
+        configureApiClient()
     }
 
-    fun setNetworkTimeout() {
-        super.configureNetworkTimeout(headerInterceptor)
-
-        sut = createApiClient(
-            okHttpClient = okHttpClient,
-            baseUrl = baseEndpoint
-        )
-    }
-
-    fun setNetworkUnknownHost() {
-        super.configureUnknownHost(headerInterceptor)
-
-        sut = createApiClient(
-            okHttpClient = okHttpClient,
-            baseUrl = "http://unknown_host/"
-        )
-    }
-
-    fun setNetworkException() {
-        super.configureNetworkException(headerInterceptor)
-
+    private fun configureApiClient() {
         sut = createApiClient(
             okHttpClient = okHttpClient,
             baseUrl = baseEndpoint
@@ -141,7 +137,7 @@ internal class SimpleApiClientTest : MockWebServerTest() {
 
         @Test
         fun `request fails with SocketTimeoutException if timeout`() {
-            setNetworkTimeout()
+            configureNetworkTimeout()
 
             assertFailsWith(SocketTimeoutException::class) {
                 sut.getAll().execute()
@@ -150,7 +146,7 @@ internal class SimpleApiClientTest : MockWebServerTest() {
 
         @Test
         fun `request fails with UnknownHostException if unknown host`() {
-            setNetworkUnknownHost()
+            configureUnknownHost()
 
             assertFailsWith(UnknownHostException::class) {
                 sut.getAll().execute()
@@ -159,7 +155,7 @@ internal class SimpleApiClientTest : MockWebServerTest() {
 
         @Test
         fun `request fails with Exception if other network exception`() {
-            setNetworkException()
+            configureNetworkException()
 
             assertFailsWith(Exception::class) {
                 sut.getAll().execute()

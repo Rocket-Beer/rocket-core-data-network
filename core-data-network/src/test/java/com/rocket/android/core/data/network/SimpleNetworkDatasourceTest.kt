@@ -1,18 +1,18 @@
 package com.rocket.android.core.data.network
 
-import arrow.core.Either
-import com.rocket.android.core.data.commons.network.di.createApiClient
-import com.rocket.android.core.data.commons.network.interceptor.BaseHeaderInterceptor
+import com.google.common.truth.Truth.assertThat
 import com.rocket.android.core.data.network.datasources.SimpleNetworkDatasource
 import com.rocket.android.core.data.network.error.NetworkFailure
 import com.rocket.android.core.data.network.interceptor.HeaderInterceptor
 import com.rocket.android.core.data.network.model.ApiResponse
 import com.rocket.android.core.data.network.model.fakeApiRequestSimpleFake
 import com.rocket.android.core.data.network.service.SimpleFakeApiService
-import com.rocket.android.core.data.network.test.MockWebServerTest
-import com.rocket.android.core.data.network.test.l
-import com.rocket.android.core.data.network.test.r
-import com.google.common.truth.Truth.assertThat
+import com.rocket.android.core.data.network.test.mockserver.MockWebServerTest
+import com.rocket.android.core.data.network.test.utils.l
+import com.rocket.android.core.data.network.test.utils.r
+import com.rocket.core.data.network.commons.di.createApiClient
+import com.rocket.core.data.network.commons.interceptor.BaseHeaderInterceptor
+import com.rocket.core.domain.functional.Either
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -34,52 +34,33 @@ internal class SimpleNetworkDatasourceTest : MockWebServerTest() {
         initDI()
     }
 
+    override fun configureOkHttpClient(headerInterceptor: BaseHeaderInterceptor?) {
+        super.configureOkHttpClient(headerInterceptor)
+        configureDatasource()
+    }
+
+    override fun configureNetworkTimeout() {
+        super.configureNetworkTimeout()
+        configureDatasource()
+    }
+
+    override fun configureUnknownHost() {
+        super.configureUnknownHost()
+        configureDatasource()
+    }
+
+    override fun configureNetworkException() {
+        super.configureNetworkException()
+        configureDatasource()
+    }
+
     private fun initDI() {
         headerInterceptor = HeaderInterceptor()
         configureOkHttpClient(headerInterceptor)
-
-        apiService = createApiClient(
-            okHttpClient = okHttpClient,
-            baseUrl = baseEndpoint
-        )
-
-        sut = SimpleNetworkDatasource(
-            apiService = apiService,
-            crashLogger = testCoreDataNetworkProvider.crashLogger
-        )
+        configureDatasource()
     }
 
-    fun setNetworkTimeout() {
-        configureNetworkTimeout(headerInterceptor)
-
-        apiService = createApiClient(
-            okHttpClient = okHttpClient,
-            baseUrl = baseEndpoint
-        )
-
-        sut = SimpleNetworkDatasource(
-            apiService = apiService,
-            crashLogger = testCoreDataNetworkProvider.crashLogger
-        )
-    }
-
-    fun setNetworkUnknownHost() {
-        configureUnknownHost(headerInterceptor)
-
-        apiService = createApiClient(
-            okHttpClient = okHttpClient,
-            baseUrl = "http://unknown_host/"
-        )
-
-        sut = SimpleNetworkDatasource(
-            apiService = apiService,
-            crashLogger = testCoreDataNetworkProvider.crashLogger
-        )
-    }
-
-    fun setNetworkException() {
-        configureNetworkException(headerInterceptor)
-
+    private fun configureDatasource() {
         apiService = createApiClient(
             okHttpClient = okHttpClient,
             baseUrl = baseEndpoint
@@ -310,7 +291,7 @@ internal class SimpleNetworkDatasourceTest : MockWebServerTest() {
 
         @Test
         fun `fails due to SocketTimeoutException if timeout`() {
-            setNetworkTimeout()
+            configureNetworkTimeout()
 
             val either = sut.getAll()
 
@@ -320,10 +301,9 @@ internal class SimpleNetworkDatasourceTest : MockWebServerTest() {
             assertThat(result).isInstanceOf(NetworkFailure.Timeout::class.java)
         }
 
-
         @Test
         fun `fails due to UnknownHostException if unknown host`() {
-            setNetworkUnknownHost()
+            configureUnknownHost()
 
             val either = sut.getAll()
 
@@ -335,7 +315,7 @@ internal class SimpleNetworkDatasourceTest : MockWebServerTest() {
 
         @Test
         fun `fails due to Exception if other network exception`() {
-            setNetworkException()
+            configureNetworkException()
 
             val httpExceptionCode = "-401"
             val either = sut.getAll()

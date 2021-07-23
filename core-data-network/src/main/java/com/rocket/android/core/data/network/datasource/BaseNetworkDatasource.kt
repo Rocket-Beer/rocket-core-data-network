@@ -1,13 +1,9 @@
 package com.rocket.android.core.data.network.datasource
 
-import arrow.core.Either
-import arrow.core.Left
-import arrow.core.left
-import arrow.core.right
 import com.rocket.android.core.data.network.error.NetworkFailure
+import com.rocket.android.core.data.network.error.NetworkFailure.JsonFormat
 import com.rocket.android.core.data.network.model.BaseNetworkApiResponse
 import com.rocket.core.crashreporting.logger.CrashLogger
-import com.rocket.core.crashreporting.logger.DefaultLogger
 import com.rocket.core.data.network.commons.error.NetworkException
 import com.rocket.core.data.network.commons.error.NoConnectionException
 import com.rocket.core.data.network.commons.logger.NetworkLoggerHelper.LOG_RESPONSE_BODY
@@ -15,6 +11,9 @@ import com.rocket.core.data.network.commons.logger.NetworkLoggerHelper.LOG_RESPO
 import com.rocket.core.data.network.commons.logger.NetworkLoggerHelper.LOG_RESPONSE_MESSAGE
 import com.rocket.core.data.network.commons.logger.mapFromResponse
 import com.rocket.core.domain.error.Failure
+import com.rocket.core.domain.functional.Either
+import com.rocket.core.domain.functional.Either.Left
+import com.rocket.core.domain.functional.Either.Right
 import retrofit2.Call
 import retrofit2.Response
 import java.io.IOException
@@ -104,7 +103,7 @@ import java.net.UnknownHostException
  *      @Json(name = "finished") val isFinished: Boolean?
  *  ) : BaseSimpleFakeApiResponse()
  */
-open class BaseNetworkDatasource(private val crashLogger: CrashLogger = DefaultLogger()) {
+open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
     private val UNKNOWN_ERROR_CODE = "-1"
     private val NO_CONNECTION = "-400"
     private val HTTP_EXCEPTION_CODE = "-401"
@@ -155,7 +154,7 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger = DefaultL
         parserSuccess: (Api?) -> Domain
     ): Either<Failure, Domain> {
         return if (response.isSuccessful) {
-            parserSuccess(response.body()).right()
+            Right(parserSuccess(response.body()))
         } else {
             parseGenericError(response)
         }
@@ -170,7 +169,7 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger = DefaultL
             exception = NetworkException("parseGenericError"),
             map = mapFromResponse(response)
         )
-        return NetworkFailure.JsonFormat("wrong json ${response.body()}").left()
+        return Left(JsonFormat("wrong json ${response.body()}"))
     }
 
     /** Parse throwable error to apiError wrapped in Either object, and logs error.
@@ -182,12 +181,14 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger = DefaultL
             exception = NetworkException("manageGenericRequestException"),
             map = mapOf(LOG_RESPONSE_MESSAGE to error.message)
         )
-        return when (error) {
-            is NoConnectionException -> NetworkFailure.NoInternetConnection.left()
-            is SocketTimeoutException -> NetworkFailure.Timeout.left()
-            is UnknownHostException -> NetworkFailure.UnknownHost.left()
-            else -> NetworkFailure.ServerFailure(HTTP_EXCEPTION_CODE, error.message).left()
-        }
+        return Left(
+            when (error) {
+                is NoConnectionException -> NetworkFailure.NoInternetConnection
+                is SocketTimeoutException -> NetworkFailure.Timeout
+                is UnknownHostException -> NetworkFailure.UnknownHost
+                else -> NetworkFailure.ServerFailure(HTTP_EXCEPTION_CODE, error.message)
+            }
+        )
     }
     //endregion
 
@@ -251,7 +252,7 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger = DefaultL
     ): Either<BaseNetworkApiResponse, Domain> {
         val data = response.body()
         return if (isSuccessful(response, data)) {
-            parserSuccess(data).right()
+            Right(parserSuccess(data))
         } else {
             parseError(response)
         }
@@ -279,10 +280,12 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger = DefaultL
         )
 
         return when (val error = response.body()) {
-            is BaseNetworkApiResponse -> throwError(
-                code = error.errorCode() ?: UNKNOWN_ERROR_CODE,
-                message = error.errorData()
-            ).left()
+            is BaseNetworkApiResponse -> Left(
+                throwError(
+                    code = error.errorCode() ?: UNKNOWN_ERROR_CODE,
+                    message = error.errorData()
+                )
+            )
             else -> {
                 parseErrorBody(response)
             }
@@ -305,11 +308,13 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger = DefaultL
         )
 
         return try {
-            parseErrorType(
-                code = response.code(),
-                message = response.message(),
-                body = errorBody
-            ).left()
+            Left(
+                parseErrorType(
+                    code = response.code(),
+                    message = response.message(),
+                    body = errorBody
+                )
+            )
         } catch (e: Exception) {
             Left(throwError(response.code().toString(), e.message))
         }
