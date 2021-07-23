@@ -10,8 +10,8 @@ ext {
     def LOCAL_PROPERTIES = "local.properties"
     def LOCAL_PUBLISHER_USERNAME = "github.username"
     def LOCAL_PUBLISHER_TOKEN = "github.token"
-    def GITHUB_ACTIONS_PUBLISHER_USERNAME = "PUBLISHER_USERNAME"
-    def GITHUB_ACTIONS_PUBLISHER_TOKEN = "PUBLISHER_TOKEN"
+    def GITHUB_ACTIONS_PUBLISHER_USERNAME = "GITHUB_ACTOR"
+    def GITHUB_ACTIONS_PUBLISHER_TOKEN = "GITHUB_TOKEN"
 
     getPublisherProperties = { projectDir ->
         Properties properties = new Properties()
