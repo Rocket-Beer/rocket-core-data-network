@@ -1,4 +1,6 @@
 # rocket-core-data-network
+![example workflow](https://github.com/Rocket-Beer/rocket-core-data-network/actions/workflows/android.yml/badge.svg)
+
 Core library to manage network access
 
 
