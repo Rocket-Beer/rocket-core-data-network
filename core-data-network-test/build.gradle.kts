@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    id("de.mannodermaus.android-junit5")
 }
 
 android {
@@ -9,7 +10,7 @@ android {
     buildToolsVersion("30.0.3")
 
     defaultConfig {
-        minSdkVersion(24)
+        minSdkVersion(21)
         targetSdkVersion(30)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -37,7 +38,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
     implementation("androidx.core:core-ktx:1.6.0")
 
     implementation("com.rocket.core:core-domain:0.0.3-alpha6")
@@ -47,12 +48,14 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
     api("junit:junit:4.13.2")
-    api("org.junit.jupiter:junit-jupiter:5.6.3")
+    api("org.junit.jupiter:junit-jupiter:5.7.1")
     api("com.google.truth:truth:1.1.3")
-    api("org.jetbrains.kotlin:kotlin-test:1.5.20")
+    api("org.jetbrains.kotlin:kotlin-test:1.5.21")
     api("io.mockk:mockk:1.12.0")
     api("io.mockk:mockk-android:1.12.0")
     api("com.squareup.okhttp3:mockwebserver:4.9.0")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0")
     api("androidx.test.ext:junit:1.1.3")
+
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
 }
