@@ -28,7 +28,7 @@ allprojects {
         google()
         mavenCentral()
         maven {
-            url = "https://maven.pkg.github.com/Rocket-Beer/rocket-core-data-network"
+            url = "https://maven.pkg.github.com/Rocket-Beer/"
             credentials {
                 username = getPublisherUsername(rootProject)
                 password = getPublisherPassword(rootProject)
