@@ -1,6 +1,11 @@
 buildscript {
     ext {
+        detekt_gradle_plugin = '1.17.1'
+        gradle_plugin = '4.2.1'
         kotlin_version = '1.5.20'
+        kotlin_gradle_plugin = '1.5.30'
+        ktlint_gradle_plugin = '10.1.0'
+        plugin_junit5_version = '1.7.1.1'
     }
     repositories {
         maven { url = "https://plugins.gradle.org/m2/" }
@@ -8,10 +13,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.2.1")
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20"
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:10.1.0")
-        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1")
+        classpath("com.android.tools.build:gradle:$gradle_plugin")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_gradle_plugin"
+        classpath("org.jlleitschuh.gradle:ktlint-gradle:$ktlint_gradle_plugin")
+        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detekt_gradle_plugin")
+        classpath "de.mannodermaus.gradle.plugins:android-junit5:$plugin_junit5_version"
     }
 }
 

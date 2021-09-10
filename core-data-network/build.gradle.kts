@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    id("de.mannodermaus.android-junit5")
     kotlin("android")
     kotlin("kapt")
 }
