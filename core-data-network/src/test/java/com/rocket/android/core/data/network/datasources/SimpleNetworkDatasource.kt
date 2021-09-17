@@ -17,7 +17,7 @@ internal class SimpleNetworkDatasource(
 ) : BaseNetworkDatasource(crashLogger) {
 
     suspend fun getAllSuspend(): Either<Failure, SimpleListFake?> {
-        return requestApi(
+        return requestSuspendApi(
             call = { apiService.getAllSuspend() },
             parserSuccess = { it }
         )
@@ -31,7 +31,7 @@ internal class SimpleNetworkDatasource(
     }
 
     suspend fun getAllSuspendGeneric(): Either<Failure, List<ApiResponse.SimpleFake>?> {
-        return requestGenericApi(
+        return requestGenericSuspendApi(
             call = { apiService.getAllSuspendGeneric() },
             parserSuccess = { it }
         )
