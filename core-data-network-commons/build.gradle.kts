@@ -10,7 +10,7 @@ java {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.30")
 
     api("com.rocket.core:crash-reporting:0.0.3-alpha6")
 

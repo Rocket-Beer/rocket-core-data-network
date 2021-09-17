@@ -37,22 +37,22 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.30")
     implementation("androidx.core:core-ktx:1.6.0")
 
     implementation("com.rocket.core:core-domain:0.0.3-alpha6")
     implementation("com.rocket.core:crash-reporting:0.0.3-alpha6")
-    api("com.rocket.core:core-data-network-commons:0.0.3-alpha4")
+    api("com.rocket.core:core-data-network-commons:0.0.3-alpha5")
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
     api("junit:junit:4.13.2")
-    api("org.junit.jupiter:junit-jupiter:5.6.3")
+    api("org.junit.jupiter:junit-jupiter:5.7.1")
     api("com.google.truth:truth:1.1.3")
     api("org.jetbrains.kotlin:kotlin-test:1.5.20")
     api("io.mockk:mockk:1.12.0")
     api("io.mockk:mockk-android:1.12.0")
     api("com.squareup.okhttp3:mockwebserver:4.9.0")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0")
     api("androidx.test.ext:junit:1.1.3")
 }

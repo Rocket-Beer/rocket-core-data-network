@@ -72,7 +72,7 @@ package com.rocket.android.core.data.network.model
  *  }
  */
 open class BaseNetworkApiResponse {
-    open fun isSuccess(): Boolean = false
+    open fun isSuccess(): Boolean = true
     open fun errorCode(): String? = null
     open fun errorData(): Any? = null
 }

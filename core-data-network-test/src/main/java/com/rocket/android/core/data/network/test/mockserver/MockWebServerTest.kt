@@ -92,6 +92,7 @@ open class MockWebServerTest {
     }
 
     open fun configureNetworkTimeout() {
+        every { networkHandler.isConnected } returns true
         okHttpClient = createOkHttpClient(
             connectionInterceptor = mockk {
                 every { intercept(any()) } throws SocketTimeoutException()
@@ -101,6 +102,7 @@ open class MockWebServerTest {
     }
 
     open fun configureUnknownHost() {
+        every { networkHandler.isConnected } returns true
         okHttpClient = createOkHttpClient(
             connectionInterceptor = mockk {
                 every { intercept(any()) } throws UnknownHostException()
@@ -110,6 +112,7 @@ open class MockWebServerTest {
     }
 
     open fun configureNetworkException() {
+        every { networkHandler.isConnected } returns true
         okHttpClient = createOkHttpClient(
             connectionInterceptor = mockk {
                 every { intercept(any()) } throws IOException()
