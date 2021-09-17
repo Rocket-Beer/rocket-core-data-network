@@ -10,7 +10,6 @@ import com.rocket.android.core.data.network.service.SimpleFakeApiService
 import com.rocket.core.crashreporting.logger.CrashLogger
 import com.rocket.core.domain.error.Failure
 import com.rocket.core.domain.functional.Either
-import java.lang.Exception
 
 internal class SimpleNetworkDatasource(
     private val apiService: SimpleFakeApiService,
@@ -18,23 +17,38 @@ internal class SimpleNetworkDatasource(
 ) : BaseNetworkDatasource(crashLogger) {
 
     suspend fun getAllSuspend(): Either<Failure, SimpleListFake?> {
-        return requestApi(apiService.getAllSuspend()) { it }
+        return requestApi(
+            call = { apiService.getAllSuspend() },
+            parserSuccess = { it }
+        )
     }
 
     fun getAll(): Either<Failure, ApiResponse.SimpleListFake?> {
-        return requestApi(apiService.getAll()) { it }
+        return requestApi(
+            call = { apiService.getAll() },
+            parserSuccess = { it }
+        )
     }
 
     suspend fun getAllSuspendGeneric(): Either<Failure, List<ApiResponse.SimpleFake>?> {
-        return requestGenericApi(apiService.getAllSuspendGeneric()) { it }
+        return requestGenericApi(
+            call = { apiService.getAllSuspendGeneric() },
+            parserSuccess = { it }
+        )
     }
 
     fun getAllGeneric(): Either<Failure, List<ApiResponse.SimpleFake>?> {
-        return requestGenericApi(apiService.getAllGeneric()) { it }
+        return requestGenericApi(
+            call = { apiService.getAllGeneric() },
+            parserSuccess = { it }
+        )
     }
 
     fun saveElement(data: ApiRequest.SimpleFake): Either<Failure, BaseNetworkApiResponse?> {
-        return requestApi(apiService.saveElement(data)) { it }
+        return requestApi(
+            call = { apiService.saveElement(data) },
+            parserSuccess = { it }
+        )
     }
 
     override fun parseErrorType(code: Int, message: Any?, body: String?): BaseNetworkApiResponse {
