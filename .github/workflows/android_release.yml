@@ -1,10 +1,10 @@
-name: Android Snapshots CI
+name: Android Release CI
 
 on:
   push:
 
   pull_request:
-    branches: [ develop ]
+    branches: [ main ]
 
 jobs:
   build:
