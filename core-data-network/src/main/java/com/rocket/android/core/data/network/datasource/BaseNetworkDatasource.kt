@@ -120,12 +120,12 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      * @param parserSuccess lambda to parse success response.
      * @return success/unsuccess result wrapped into Either class.
      */
-    protected open suspend fun <Api, Domain> requestGenericApi(
-        call: Response<Api>,
+    protected open suspend fun <Api, Domain> requestGenericSuspendApi(
+        call: suspend () -> Response<Api>,
         parserSuccess: (Api?) -> Domain
     ): Either<Failure, Domain> {
         return try {
-            parseGenericResponse(call, parserSuccess)
+            parseGenericResponse(call(), parserSuccess)
         } catch (error: IOException) {
             manageGenericRequestException(error)
         }
@@ -138,11 +138,11 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      * @return success/unsuccess result wrapped into Either class.
      */
     protected open fun <Api, Domain> requestGenericApi(
-        call: Call<Api>,
+        call: () -> Call<Api>,
         parserSuccess: (Api?) -> Domain
     ): Either<Failure, Domain> {
         return try {
-            parseGenericResponse(call.execute(), parserSuccess)
+            parseGenericResponse(call().execute(), parserSuccess)
         } catch (error: IOException) {
             manageGenericRequestException(error)
         }
@@ -203,12 +203,12 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      * @param parserSuccess lambda to parse success response.
      * @return success/unsuccess result wrapped into Either class.
      */
-    protected open suspend fun <Api : BaseNetworkApiResponse, Domain> requestApi(
-        call: Response<Api>,
+    protected open suspend fun <Api : BaseNetworkApiResponse, Domain> requestSuspendApi(
+        call: suspend () -> Response<Api>,
         parserSuccess: (Api?) -> Domain
     ): Either<Failure, Domain> {
         return try {
-            parseResponse(call, parserSuccess).mapLeft(::parseToFailure)
+            parseResponse(call(), parserSuccess).mapLeft(::parseToFailure)
         } catch (error: IOException) {
             manageRequestException<Domain>(error).mapLeft(::parseToFailure)
         }
@@ -221,11 +221,11 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      * @return success/unsuccess result wrapped into Either class.
      */
     protected open fun <Api : BaseNetworkApiResponse, Domain> requestApi(
-        call: Call<Api>,
+        call: () -> Call<Api>,
         parserSuccess: (Api?) -> Domain
     ): Either<Failure, Domain> {
         return try {
-            parseResponse(call.execute(), parserSuccess).mapLeft(::parseToFailure)
+            parseResponse(call().execute(), parserSuccess).mapLeft(::parseToFailure)
         } catch (error: IOException) {
             manageRequestException<Domain>(error).mapLeft(::parseToFailure)
         }
