@@ -2,6 +2,7 @@ name: Android Release CI
 
 on:
   push:
+    branches: [ bugfix/*, release/* ]
 
   pull_request:
     branches: [ main ]
