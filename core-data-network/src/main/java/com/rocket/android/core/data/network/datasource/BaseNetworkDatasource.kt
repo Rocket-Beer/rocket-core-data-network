@@ -1,7 +1,8 @@
 package com.rocket.android.core.data.network.datasource
 
 import com.rocket.android.core.data.network.error.NetworkFailure
-import com.rocket.android.core.data.network.error.NetworkFailure.JsonFormat
+import com.rocket.android.core.data.network.error.NetworkFailure.NotAuthorized
+import com.rocket.android.core.data.network.error.NetworkFailure.ServerFailure
 import com.rocket.android.core.data.network.model.BaseNetworkApiResponse
 import com.rocket.core.crashreporting.logger.CrashLogger
 import com.rocket.core.data.network.commons.error.NetworkException
@@ -173,7 +174,10 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
             exception = NetworkException("parseGenericError"),
             map = mapFromResponse(response)
         )
-        return Left(JsonFormat("wrong json ${response.body()}"))
+        return when (response.code()) {
+            UNAUTHORIZED_HTTP_ERROR_CODE -> Left(NotAuthorized)
+            else -> Left(ServerFailure("${response.code()}", response.errorBody()?.string()))
+        }
     }
 
     /** Parse throwable error to apiError wrapped in Either object, and logs error.
@@ -421,5 +425,7 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
         private const val TIMEOUT = "-402"
         private const val UNKNOWN_HOST = "-403"
         private const val JSON_FORMAT = "-404"
+
+        private const val UNAUTHORIZED_HTTP_ERROR_CODE = 401
     }
 }

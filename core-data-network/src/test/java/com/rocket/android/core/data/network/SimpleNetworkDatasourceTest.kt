@@ -182,6 +182,35 @@ internal class SimpleNetworkDatasourceTest : MockWebServerTest() {
     @Nested
     inner class GenericResponses {
         @Test
+        fun `server response generic error 500 (Internal Server Error)`() {
+            enqueueMockResponse(500, "json/errorGenericResponse.json")
+
+            val either = sut.getAllGeneric()
+
+            assertNotNull(either)
+            assertThat(either).isInstanceOf(Either.Left::class.java)
+            val result = either.l()
+            assertThat(result).isInstanceOf(NetworkFailure.ServerFailure::class.java)
+            with(result as? NetworkFailure.ServerFailure?) {
+                assertNotNull(this?.code)
+                assertEquals("500", this?.code)
+                assertEquals("Internal server error", this?.data)
+            }
+        }
+
+        @Test
+        fun `server response generic error 401 (Unauthorized)`() {
+            enqueueMockResponse(401, "json/errorGenericResponse.json")
+
+            val either = sut.getAllGeneric()
+
+            assertNotNull(either)
+            assertThat(either).isInstanceOf(Either.Left::class.java)
+            val result = either.l()
+            assertThat(result).isInstanceOf(NetworkFailure.NotAuthorized::class.java)
+        }
+
+        @Test
         fun `server response generic list successfully`() {
             enqueueMockResponse(200, "json/getFakesListResponse.json")
 
@@ -269,6 +298,37 @@ internal class SimpleNetworkDatasourceTest : MockWebServerTest() {
             assertThat(result).isInstanceOf(List::class.java)
             result?.forEach {
                 assertThat(it).isInstanceOf(ApiResponse.SimpleFake::class.java)
+            }
+            Unit
+        }
+
+        @Test
+        fun `suspend server response generic error 401 (Unauthorized)`() = runBlocking {
+            enqueueMockResponse(401, "json/errorGenericResponse.json")
+
+            val either = sut.getAllSuspendGeneric()
+
+            assertNotNull(either)
+            assertThat(either).isInstanceOf(Either.Left::class.java)
+            val result = either.l()
+            assertThat(result).isInstanceOf(NetworkFailure.NotAuthorized::class.java)
+            Unit
+        }
+
+        @Test
+        fun `suspend server response generic error 500 (Internal Server Error)`() = runBlocking {
+            enqueueMockResponse(500, "json/errorGenericResponse.json")
+
+            val either = sut.getAllSuspendGeneric()
+
+            assertNotNull(either)
+            assertThat(either).isInstanceOf(Either.Left::class.java)
+            val result = either.l()
+            assertThat(result).isInstanceOf(NetworkFailure.ServerFailure::class.java)
+            with(result as? NetworkFailure.ServerFailure?) {
+                assertNotNull(this?.code)
+                assertEquals("500", this?.code)
+                assertEquals("Internal server error", this?.data)
             }
             Unit
         }
