@@ -194,7 +194,7 @@ internal class SimpleNetworkDatasourceTest : MockWebServerTest() {
             with(result as? NetworkFailure.ServerFailure?) {
                 assertNotNull(this?.code)
                 assertEquals("500", this?.code)
-                assertEquals("Internal server error", this?.data)
+                assertEquals("Server Error:Internal server error", this?.data)
             }
         }
 
@@ -328,7 +328,7 @@ internal class SimpleNetworkDatasourceTest : MockWebServerTest() {
             with(result as? NetworkFailure.ServerFailure?) {
                 assertNotNull(this?.code)
                 assertEquals("500", this?.code)
-                assertEquals("Internal server error", this?.data)
+                assertEquals("Server Error:Internal server error", this?.data)
             }
             Unit
         }
