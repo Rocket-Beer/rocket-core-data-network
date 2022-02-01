@@ -426,7 +426,7 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      * @param message error message.
      * @param body response errorBody.
      * @return {@link NetworkFailure} network failure object.
-    */
+     */
     open fun parseGenericErrorType(code: Int, message: String?, body: String?): NetworkFailure {
         return ServerFailure("$code", "$message:$body")
     }
