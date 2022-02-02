@@ -75,4 +75,5 @@ open class BaseNetworkApiResponse {
     open fun isSuccess(): Boolean = true
     open fun errorCode(): String? = null
     open fun errorData(): Any? = null
+    open fun errorBody(): String? = null
 }

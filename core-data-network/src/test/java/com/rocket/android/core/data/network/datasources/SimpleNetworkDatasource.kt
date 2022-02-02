@@ -31,6 +31,16 @@ internal class SimpleNetworkDatasource(
         )
     }
 
+    fun getAllError(): Either<Failure, ApiResponse.SimpleListFake?> {
+        return requestApi(
+            call = { apiService.getAllError() },
+            parserSuccess = { it },
+            parserError = {
+                Failure.GenericFailure(it?.errorBody())
+            }
+        )
+    }
+
     suspend fun getAllSuspendGeneric(): Either<Failure, List<ApiResponse.SimpleFake>?> {
         return requestGenericSuspendApi(
             call = { apiService.getAllSuspendGeneric() },

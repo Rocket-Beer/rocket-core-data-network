@@ -88,6 +88,16 @@ internal class SimpleNetworkDatasourceTest : MockWebServerTest() {
         }
 
         @Test
+        fun `server response object error`() {
+            enqueueMockResponse(200, "json/getFakesByIdResponse.json")
+
+            val either = sut.getAllError()
+
+            assertNotNull(either)
+            assertThat(either).isInstanceOf(Either.Left::class.java)
+        }
+
+        @Test
         fun `server response empty 204 successfully`() {
             enqueueMockResponse(204, "json/emptyFakeResponse.json")
 

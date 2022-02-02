@@ -228,10 +228,11 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      */
     protected open fun <Api : BaseNetworkApiResponse, Domain> requestApi(
         call: () -> Call<Api>,
-        parserSuccess: (Api?) -> Domain
+        parserSuccess: (Api?) -> Domain,
+        parserError: ((BaseNetworkApiResponse?) -> Failure)? = null
     ): Either<Failure, Domain> {
         return try {
-            parseResponse(call().execute(), parserSuccess).mapLeft(::parseToFailure)
+            parseResponse(call().execute(), parserSuccess).mapLeft(parserError ?: (::parseToFailure))
         } catch (error: IOException) {
             manageRequestException<Domain>(error).mapLeft(::parseToFailure)
         }
@@ -417,6 +418,7 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
             override fun isSuccess(): Boolean = false
             override fun errorCode(): String = code.toString()
             override fun errorData(): Any? = message
+            override fun errorBody(): String? = body
         }
 
     /**
