@@ -51,18 +51,11 @@ dependencies {
     implementation("androidx.annotation:annotation:1.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
 
-    implementation("com.rocket.core:core-domain:0.0.3-alpha6")
-    implementation("com.rocket.core:crash-reporting:0.0.3-alpha6")
-    implementation("com.rocket.android.core:crash-reporting-android:0.0.3-alpha7")
-    implementation("com.rocket.core:core-data-network-commons:0.0.3-alpha5")
+    implementation("com.rocket.core:core-domain:0.0-beta0")
+    implementation("com.rocket.android.core:crash-reporting-android:0.0-beta0")
+    implementation("com.rocket.core:core-data-network-commons:0.0-beta0")
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
-    implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.10.0")
-
-    testImplementation("com.rocket.android.core:core-data-network-test:0.0.2-alpha5")
+    testImplementation("com.rocket.android.core:core-data-network-test:0.0-beta0")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
     testImplementation("com.google.truth:truth:1.1.3")
