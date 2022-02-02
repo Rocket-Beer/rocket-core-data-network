@@ -17,7 +17,6 @@ import com.rocket.core.domain.functional.Either.Right
 import retrofit2.Call
 import retrofit2.Response
 import java.io.IOException
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
