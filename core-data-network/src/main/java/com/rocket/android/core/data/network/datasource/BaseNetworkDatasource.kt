@@ -1,7 +1,7 @@
 package com.rocket.android.core.data.network.datasource
 
 import com.rocket.android.core.data.network.error.NetworkFailure
-import com.rocket.android.core.data.network.error.NetworkFailure.JsonFormat
+import com.rocket.android.core.data.network.error.NetworkFailure.ServerFailure
 import com.rocket.android.core.data.network.model.BaseNetworkApiResponse
 import com.rocket.core.crashreporting.logger.CrashLogger
 import com.rocket.core.data.network.commons.error.NetworkException
@@ -174,7 +174,13 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
             exception = NetworkException("parseGenericError"),
             map = mapFromResponse(response)
         )
-        return Left(JsonFormat("wrong json ${response.body()}"))
+        return Left(
+            parseGenericErrorType(
+                response.code(),
+                response.message(),
+                response.errorBody()?.string()
+            )
+        )
     }
 
     /** Parse throwable error to apiError wrapped in Either object, and logs error.
@@ -404,7 +410,7 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      * }
      * @param code error code.
      * @param message error message.
-     * @param body reponse errorBody.
+     * @param body response errorBody.
      * @return {@link BaseNetworkApiResponse} new apiError object.
      */
     open fun parseErrorType(code: Int, message: Any?, body: String?): BaseNetworkApiResponse =
@@ -415,6 +421,18 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
             override fun errorData(): Any? = message
             override fun errorBody(): String? = body
         }
+
+    /**
+     * Return a network failure {@link NetworkFailure} with code and message error.
+     * This could be overridden by new classes to handle any specific network error.
+     * @param code error code.
+     * @param message error message.
+     * @param body response errorBody.
+     * @return {@link NetworkFailure} network failure object.
+     */
+    open fun parseGenericErrorType(code: Int, message: String?, body: String?): NetworkFailure {
+        return ServerFailure("$code", "$message:$body")
+    }
     //endregion
 
     companion object {

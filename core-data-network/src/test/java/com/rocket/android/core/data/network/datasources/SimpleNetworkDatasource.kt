@@ -1,6 +1,7 @@
 package com.rocket.android.core.data.network.datasources
 
 import com.rocket.android.core.data.network.datasource.BaseNetworkDatasource
+import com.rocket.android.core.data.network.error.NetworkFailure
 import com.rocket.android.core.data.network.model.ApiRequest
 import com.rocket.android.core.data.network.model.ApiResponse
 import com.rocket.android.core.data.network.model.ApiResponse.SimpleListFake
@@ -78,5 +79,12 @@ internal class SimpleNetworkDatasource(
             code = code.toString(),
             message = message.toString()
         )
+    }
+
+    override fun parseGenericErrorType(code: Int, message: String?, body: String?): NetworkFailure {
+        return when (code) {
+            401 -> NetworkFailure.NotAuthorized
+            else -> super.parseGenericErrorType(code, message, body)
+        }
     }
 }
