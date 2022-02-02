@@ -20,6 +20,9 @@ internal interface SimpleFakeApiService {
     @GET(value = "/all")
     fun getAll(): Call<ApiResponse.SimpleListFake>
 
+    @GET(value = "/allError")
+    fun getAllError(): Call<ApiResponse.SimpleListFake>
+
     @GET(value = "/all")
     suspend fun getAllSuspendGeneric(): Response<List<ApiResponse.SimpleFake>>
 
