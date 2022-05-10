@@ -131,6 +131,23 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
         }
     }
 
+    /** Suspendable execution of an generic api call (non BaseNetworkApiResponse response expected
+     * {@link BaseNetworkApiResponse}) and parse success result with response code.
+     * @param call retrofit Response to execute.
+     * @param parserSuccess lambda to parse success response.
+     * @return success/unsuccess result wrapped into Either class.
+     */
+    protected open suspend fun <Api, Domain> requestGenericSuspendApi(
+        call: suspend () -> Response<Api>,
+        parserSuccess: (Api?, Int) -> Domain
+    ): Either<Failure, Domain> {
+        return try {
+            parseGenericResponseWithCode(call(), parserSuccess)
+        } catch (error: IOException) {
+            manageGenericRequestException(error)
+        }
+    }
+
     /** Executes an generic api call (non BaseNetworkApiResponse response expected
      * {@link BaseNetworkApiResponse}) and parse success result.
      * @param call retrofit Call to execute.
@@ -148,6 +165,23 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
         }
     }
 
+    /** Executes an generic api call (non BaseNetworkApiResponse response expected
+     * {@link BaseNetworkApiResponse}) and parse success result.
+     * @param call retrofit Call to execute.
+     * @param parserSuccess lambda to parse success response.
+     * @return success/unsuccess result wrapped into Either class.
+     */
+    protected open fun <Api, Domain> requestGenericApi(
+        call: () -> Call<Api>,
+        parserSuccess: (Api?, Int) -> Domain
+    ): Either<Failure, Domain> {
+        return try {
+            parseGenericResponseWithCode(call().execute(), parserSuccess)
+        } catch (error: IOException) {
+            manageGenericRequestException(error)
+        }
+    }
+
     /** Parse response from generic api request and check http code to parse success or error.
      * @param response retrofit Response to parse.
      * @param parserSuccess lambda to parse success response.
@@ -159,6 +193,23 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
     ): Either<Failure, Domain> {
         return if (response.isSuccessful) {
             Right(parserSuccess(response.body()))
+        } else {
+            parseGenericError(response)
+        }
+    }
+
+    /** Parse response with response code from generic api request and check http code to parse
+     * success or error.
+     * @param response retrofit Response to parse.
+     * @param parserSuccess lambda to parse success response and response code.
+     * @return success/unsuccess result wrapped into Either class.
+     */
+    private fun <Api, Domain> parseGenericResponseWithCode(
+        response: Response<Api>,
+        parserSuccess: (Api?, Int) -> Domain
+    ): Either<Failure, Domain> {
+        return if (response.isSuccessful) {
+            Right(parserSuccess(response.body(), response.code()))
         } else {
             parseGenericError(response)
         }
@@ -207,16 +258,37 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      * {@link BaseNetworkApiResponse}) and parse success result.
      * @param call retrofit Response to execute.
      * @param parserSuccess lambda to parse success response.
+     * @param parserError lambda to parse error response.
      * @return success/unsuccess result wrapped into Either class.
      */
     protected open suspend fun <Api : BaseNetworkApiResponse, Domain> requestSuspendApi(
         call: suspend () -> Response<Api>,
-        parserSuccess: (Api?) -> Domain
+        parserSuccess: (Api?) -> Domain,
+        parserError: ((BaseNetworkApiResponse?) -> Failure)? = null
     ): Either<Failure, Domain> {
         return try {
-            parseResponse(call(), parserSuccess).mapLeft(::parseToFailure)
+            parseResponse(call(), parserSuccess).mapLeft(parserError ?: (::parseToFailure))
         } catch (error: IOException) {
-            manageRequestException<Domain>(error).mapLeft(::parseToFailure)
+            manageRequestException<Domain>(error).mapLeft(parserError ?: (::parseToFailure))
+        }
+    }
+
+    /** Suspendable execution of an api call (BaseNetworkApiResponse response expected
+     * {@link BaseNetworkApiResponse}) and parse success result with response code.
+     * @param call retrofit Response to execute.
+     * @param parserSuccess lambda to parse success response and response code.
+     * @param parserError lambda to parse error response.
+     * @return success/unsuccess result wrapped into Either class.
+     */
+    protected open suspend fun <Api : BaseNetworkApiResponse, Domain> requestSuspendApi(
+        call: suspend () -> Response<Api>,
+        parserSuccess: (Api?, Int) -> Domain,
+        parserError: ((BaseNetworkApiResponse?) -> Failure)? = null
+    ): Either<Failure, Domain> {
+        return try {
+            parseResponseWithCode(call(), parserSuccess).mapLeft(parserError ?: (::parseToFailure))
+        } catch (error: IOException) {
+            manageRequestException<Domain>(error).mapLeft(parserError ?: (::parseToFailure))
         }
     }
 
@@ -224,6 +296,7 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
      * {@link BaseNetworkApiResponse}) and parse success result.
      * @param call retrofit Call to execute.
      * @param parserSuccess lambda to parse success response.
+     * @param parserError lambda to parse error response.
      * @return success/unsuccess result wrapped into Either class.
      */
     protected open fun <Api : BaseNetworkApiResponse, Domain> requestApi(
@@ -234,7 +307,26 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
         return try {
             parseResponse(call().execute(), parserSuccess).mapLeft(parserError ?: (::parseToFailure))
         } catch (error: IOException) {
-            manageRequestException<Domain>(error).mapLeft(::parseToFailure)
+            manageRequestException<Domain>(error).mapLeft(parserError ?: (::parseToFailure))
+        }
+    }
+
+    /** Executes an api call (BaseNetworkApiResponse response expected
+     * {@link BaseNetworkApiResponse}) and parse success result with response code.
+     * @param call retrofit Call to execute.
+     * @param parserSuccess lambda to parse success response and response code.
+     * @param parserError lambda to parse error response.
+     * @return success/unsuccess result wrapped into Either class.
+     */
+    protected open fun <Api : BaseNetworkApiResponse, Domain> requestApi(
+        call: () -> Call<Api>,
+        parserSuccess: (Api?, Int) -> Domain,
+        parserError: ((BaseNetworkApiResponse?) -> Failure)? = null
+    ): Either<Failure, Domain> {
+        return try {
+            parseResponseWithCode(call().execute(), parserSuccess).mapLeft(parserError ?: (::parseToFailure))
+        } catch (error: IOException) {
+            manageRequestException<Domain>(error).mapLeft(parserError ?: (::parseToFailure))
         }
     }
 
@@ -254,6 +346,22 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
         }
     }
 
+    /** Parse response from api request and check http code to parse success or error.
+     * @param response retrofit Response to parse.
+     * @param parserSuccess lambda to parse success response.
+     * @return success/unsuccess result wrapped into Either class.
+     */
+    private fun <Api : BaseNetworkApiResponse?, Domain> parseResponseWithCode(
+        response: Response<Api>,
+        parserSuccess: (Api?, Int) -> Domain
+    ): Either<BaseNetworkApiResponse, Domain> {
+        return if (response.isSuccessful) {
+            parseApiResponseWithCode(response, parserSuccess)
+        } else {
+            parseErrorBody(response)
+        }
+    }
+
     /** Parse success response from api request, and check body response to parse success or error.
      * @param response retrofit Response to parse.
      * @param parserSuccess lambda to parse success response.
@@ -266,6 +374,23 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
         val data = response.body()
         return if (isSuccessful(response, data)) {
             Right(parserSuccess(data))
+        } else {
+            parseError(response)
+        }
+    }
+
+    /** Parse success response from api request, and check body response to parse success or error.
+     * @param response retrofit Response to parse.
+     * @param parserSuccess lambda to parse success response with response code.
+     * @return success/unsuccess result wrapped into Either class.
+     */
+    private fun <Api : BaseNetworkApiResponse?, Domain> parseApiResponseWithCode(
+        response: Response<Api>,
+        parserSuccess: (Api?, Int) -> Domain
+    ): Either<BaseNetworkApiResponse, Domain> {
+        val data = response.body()
+        return if (isSuccessful(response, data)) {
+            Right(parserSuccess(data, response.code()))
         } else {
             parseError(response)
         }
