@@ -20,21 +20,21 @@ internal class SimpleNetworkDatasource(
     suspend fun getAllSuspend(): Either<Failure, SimpleListFake?> {
         return requestSuspendApi(
             call = { apiService.getAllSuspend() },
-            parserSuccess = { it }
+            parserSuccess = { response -> response }
         )
     }
 
     fun getAll(): Either<Failure, ApiResponse.SimpleListFake?> {
         return requestApi(
             call = { apiService.getAll() },
-            parserSuccess = { it }
+            parserSuccess = { response -> response }
         )
     }
 
     fun getAllError(): Either<Failure, ApiResponse.SimpleListFake?> {
         return requestApi(
             call = { apiService.getAllError() },
-            parserSuccess = { it },
+            parserSuccess = { response -> response },
             parserError = {
                 Failure.GenericFailure(it?.errorBody())
             }
@@ -44,21 +44,21 @@ internal class SimpleNetworkDatasource(
     suspend fun getAllSuspendGeneric(): Either<Failure, List<ApiResponse.SimpleFake>?> {
         return requestGenericSuspendApi(
             call = { apiService.getAllSuspendGeneric() },
-            parserSuccess = { it }
+            parserSuccess = { response -> response }
         )
     }
 
     fun getAllGeneric(): Either<Failure, List<ApiResponse.SimpleFake>?> {
         return requestGenericApi(
             call = { apiService.getAllGeneric() },
-            parserSuccess = { it }
+            parserSuccess = { response -> response }
         )
     }
 
     fun saveElement(data: ApiRequest.SimpleFake): Either<Failure, BaseNetworkApiResponse?> {
         return requestApi(
             call = { apiService.saveElement(data) },
-            parserSuccess = { it }
+            parserSuccess = { response -> response }
         )
     }
 
