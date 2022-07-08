@@ -52,7 +52,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
 
     implementation("com.rocket.core:core-domain:0.0-beta0")
-    implementation("com.rocket.android.core:crash-reporting-android:0.0-beta0")
+    implementation("com.rocket.android.core:crash-reporting-android:0.0-beta1-SNAPSHOT2022JULY08")
     implementation("com.rocket.core:core-data-network-commons:0.0-beta0")
 
     testImplementation("com.rocket.android.core:core-data-network-test:0.0-beta0")

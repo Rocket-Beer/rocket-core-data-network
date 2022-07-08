@@ -16,6 +16,7 @@ import com.rocket.core.domain.functional.Either.Left
 import com.rocket.core.domain.functional.Either.Right
 import retrofit2.Call
 import retrofit2.Response
+import java.io.File
 import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -112,7 +113,7 @@ import java.net.UnknownHostException
  *  ) : BaseSimpleFakeApiResponse()
  */
 @Suppress("TooManyFunctions")
-open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
+open class BaseNetworkDatasource(private val crashLogger: CrashLogger, private val logPath: File? = null) {
     //region Generic
     /** Suspendable execution of an generic api call (non BaseNetworkApiResponse response expected
      * {@link BaseNetworkApiResponse}) and parse success result.
@@ -171,7 +172,8 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
     private fun <Error, Domain> parseGenericError(response: Response<Error>): Either<Failure, Domain> {
         crashLogger.log(
             exception = NetworkException("parseGenericError"),
-            map = mapFromResponse(response)
+            map = mapFromResponse(response),
+            logPath = logPath
         )
         return Left(
             parseGenericErrorType(
@@ -189,7 +191,8 @@ open class BaseNetworkDatasource(private val crashLogger: CrashLogger) {
     private fun <Domain> manageGenericRequestException(error: Throwable): Either<Failure, Domain> {
         crashLogger.log(
             exception = NetworkException("manageGenericRequestException"),
-            map = mapOf(LOG_RESPONSE_MESSAGE to error.message)
+            map = mapOf(LOG_RESPONSE_MESSAGE to error.message),
+            logPath = logPath
         )
         return Left(
             when (error) {
