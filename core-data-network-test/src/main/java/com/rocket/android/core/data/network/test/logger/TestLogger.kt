@@ -8,8 +8,7 @@ class TestLogger : CrashLogger {
     override fun log(
         message: String,
         map: Map<String, String?>,
-        logLevel: LogLevel,
-        logPath: File?
+        logLevel: LogLevel
     ) {
         println(
             "[${logLevel.name.first().titlecase()}] TestLogger: $message - $map"
@@ -19,8 +18,7 @@ class TestLogger : CrashLogger {
     override fun log(
         exception: Throwable,
         map: Map<String, String?>,
-        logLevel: LogLevel,
-        logPath: File?
+        logLevel: LogLevel
     ) {
         println(
             "[${logLevel.name.first().titlecase()}] TestLogger: ${exception.message} - $map"
