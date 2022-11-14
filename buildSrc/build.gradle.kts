@@ -47,4 +47,5 @@ dependencies {
     implementation(kotlin("gradle-plugin", version = "1.5.20"))
     implementation("rocket-gradle:rocket-plugin:1.0-dev02")
     implementation("de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1")
+    implementation("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1.1")
 }
