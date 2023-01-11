@@ -1,3 +1,7 @@
+plugins {
+    id("jacoco")
+}
+
 allprojects {
     repositories {
         google()
@@ -15,6 +19,18 @@ allprojects {
                 username = userName
                 password = userPass
             }
+        }
+    }
+
+    apply(plugin = "jacoco")
+    jacoco {
+        toolVersion = "0.8.7"
+    }
+
+    tasks.withType(Test::class.java) {
+        configure<JacocoTaskExtension> {
+            isIncludeNoLocationClasses = true
+            excludes = listOf("jdk.internal.*")
         }
     }
 }
