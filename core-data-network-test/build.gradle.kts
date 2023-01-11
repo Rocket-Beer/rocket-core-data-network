@@ -4,27 +4,6 @@ plugins {
     kotlin("kapt")
 }
 
-tasks.register("jacocoTestReport", JacocoReport::class) {
-    dependsOn("testDebugUnitTest")
-
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-    }
-
-    val mainSrc = "${project.projectDir}/src/main/kotlin"
-    sourceDirectories.setFrom(files(listOf(mainSrc)))
-
-    val debugTree = fileTree(baseDir = "${project.buildDir}/tmp/kotlin-classes/debug") {
-        val fileFilter =
-            setOf("**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*", "**/*Test*.*")
-        setExcludes(fileFilter)
-    }
-    classDirectories.setFrom(files(listOf(debugTree)))
-
-    executionData.setFrom(fileTree(project.buildDir) { include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec") })
-}
-
 android {
     compileSdkVersion(30)
     buildToolsVersion("30.0.3")
