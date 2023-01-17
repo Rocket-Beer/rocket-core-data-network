@@ -12,7 +12,7 @@ java {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.30")
 
-    api("com.rocket.core:crash-reporting:0.0-beta1-SNAPSHOT2022JULY08")
+    api("com.rocket.core:crash-reporting:0.0-beta1-SNAPSHOT20220909")
 
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.squareup.retrofit2:converter-moshi:2.9.0")
