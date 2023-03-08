@@ -28,8 +28,9 @@ maven {
 ### Implement Rocket data package
 * Package "core-data-network-commons" is optional
 ~~~
-implementation "com.rocket.android.core:core-data-network:0.0-beta0"
 implementation "com.rocket.core:core-data-network-commons:0.0-beta0"
+implementation "com.rocket.android.core:core-data-network:0.0.1-beta"
+implementation "com.rocket.android.core:core-data-network-test:0.0.1-beta"
 ~~~
 
 ### Execute a generic api call (non BaseNetworkApiResponse response expected).
@@ -81,6 +82,6 @@ requestApi(
 ~~~
 
 ## Packages
-core-data-network-commons --> 0.0-beta0  
-core-data-network-test --> 0.0–beta0  
-core-data-network --> 0.0-beta0
+core-data-network-commons --> 0.0-beta0
+core-data-network --> 0.0.1-beta
+core-data-network-test --> 0.0.1-beta
